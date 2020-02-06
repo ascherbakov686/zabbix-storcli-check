@@ -1,0 +1,27 @@
+
+
+zabbix::agent::hostmetadata: 'Linux 6ql7yxnSZ8EFxEoIVduA hwstorcli pb3t6ndrNOsyzbMPkUfU'
+
+zabbix::userparameter::data:
+    storcli:
+          content: UserParameter=storcli.failures,/etc/zabbix/scripts/storcli_check.py
+    storcli_predictive:
+          content: UserParameter=storcli.predictive_failures,/etc/zabbix/scripts/storcli_check_predictive.py
+
+sudo::purge: false
+sudo::config_file_replace: false
+sudo::configs:
+ 'zabbix':
+          'content' :
+             - "Defaults:zabbix !requiretty"
+             - "zabbix ALL=(ALL) NOPASSWD: /opt/MegaRAID/storcli/storcli64 /call show J"
+             - "zabbix ALL=(ALL) NOPASSWD: /opt/MegaRAID/storcli/storcli64 /call /eall /sall show all J"
+
+types::packages:
+  storcli:
+      ensure: present
+      provider: rpm
+      source: 'http://infra-node1.domain.ru/custom/storcli-1.19.04-1.noarch.rpm'
+  zbx_own_checks:
+      ensure: latest
+      provider: yum

@@ -1,0 +1,25 @@
+
+
+zabbix::agent::hostmetadata: 'Linux 6ql7yxnSZ8EFxEoIVduA hwstorcli pb3t6ndrNOsyzbMPkUfU'
+
+zabbix::userparameter::data:
+    lsiutil:
+          content: UserParameter=lsiutil.failures[*],/etc/zabbix/scripts/lsiutil_check.sh $1 $2 $3 $4 $5 $6
+
+sudo::purge: false
+sudo::config_file_replace: false
+sudo::configs:
+ 'zabbix':
+          'content' :
+             - "Defaults:zabbix !requiretty"
+             - "zabbix ALL=(ALL) NOPASSWD: /usr/sbin/lsiutil *"
+
+
+types::packages:
+  lsiutil:
+      ensure: present
+      provider: rpm
+      source: 'http://infra-node1.domain.ru/custom/lsiutil-1.63-1.el7.x86_64.rpm'
+  zbx_own_checks:
+      ensure: latest
+      provider: yum
